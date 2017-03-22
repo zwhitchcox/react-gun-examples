@@ -1,18 +1,20 @@
 import express from 'express'
-import Gun from '../..'
+import http from 'http'
+import Gun from 'gun'
 import webpack from 'webpack'
 import WebpackDevMiddleware from 'webpack-dev-middleware'
 import config from './webpack.config'
 
 const app = express()
-const gun = Gun()
+const server = http.createServer(app)
 
-Gun({web: app})
+Gun({file: 'data.json', web: server})
 
 const compiler = webpack(config)
 
 const devMiddleware = WebpackDevMiddleware(compiler)
 
+app.use(Gun.serve)
 app.use(devMiddleware)
 
-app.listen(4000)
+server.listen(4000)
